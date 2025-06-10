@@ -1,4 +1,4 @@
-package com.izainab.myweatherapp.composable
+package com.izainab.myweatherapp.presentation.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.izainab.myweatherapp.R
-import com.izainab.myweatherapp.ui.theme.urbanist_FontFamily
+import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
 
 @Composable
 fun HourlyWeatherChip(

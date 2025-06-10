@@ -1,4 +1,4 @@
-package com.izainab.myweatherapp.composable
+package com.izainab.myweatherapp.presentation.composable
 
 import com.izainab.myweatherapp.R
 

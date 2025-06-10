@@ -1,4 +1,4 @@
-package com.izainab.myweatherapp.composable
+package com.izainab.myweatherapp.presentation.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,10 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.izainab.myweatherapp.R
-import com.izainab.myweatherapp.ui.theme.urbanist_FontFamily
+import com.izainab.myweatherapp.domain.entities.DailyWeatherInfo
+import com.izainab.myweatherapp.domain.entities.WeatherResponse
+import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
 
 @Composable
-fun WeeklyWeatherSection(modifier: Modifier = Modifier) {
+fun WeeklyWeatherSection(weeklyWeatherInfo: List<DailyWeatherInfo>, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -50,17 +52,16 @@ fun WeeklyWeatherSection(modifier: Modifier = Modifier) {
                 .border(width = 1.dp, Color(0x14060414), shape = RoundedCornerShape(24.dp))
                 .padding(vertical = 4.dp),
         ) {
-            val myList = listOf("", "", "", "", "", "", "")
-            itemsIndexed(myList) { index, step ->
+            itemsIndexed(weeklyWeatherInfo) { index, day ->
                 Box(contentAlignment = Alignment.BottomCenter) {
 
                     DailyWeatherContainer(
-                        "Sunday",
-                        "32",
-                        "20",
+                        day.time.toString(),
+                        day.temperature2mMax.toString(),
+                        day.temperature2mMin.toString(),
                         painterResource(R.drawable.clear_sky)
                     )
-                    if (index != myList.lastIndex) {
+                    if (index != weeklyWeatherInfo.lastIndex) {
                         HorizontalDivider(
                             color = Color(0x14060414)
                         )
@@ -74,5 +75,5 @@ fun WeeklyWeatherSection(modifier: Modifier = Modifier) {
 @Preview(widthDp = 360)
 @Composable
 fun WeeklyWeatherSectionPre() {
-    WeeklyWeatherSection()
+//    WeeklyWeatherSection()
 }

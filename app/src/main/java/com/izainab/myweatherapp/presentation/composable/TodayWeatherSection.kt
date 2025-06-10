@@ -1,8 +1,7 @@
-package com.izainab.myweatherapp.composable
+package com.izainab.myweatherapp.presentation.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.izainab.myweatherapp.R
-import com.izainab.myweatherapp.ui.theme.urbanist_FontFamily
+import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
 
 @Composable
 fun TodayWeatherSection(modifier: Modifier = Modifier) {
