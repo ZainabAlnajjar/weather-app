@@ -1,0 +1,41 @@
+package com.izainab.myweatherapp.data.meteoAPIDataSource
+
+import android.util.Log
+import com.izainab.myweatherapp.data.meteoAPIDataSource.dto.WeatherResponseDto
+import com.izainab.myweatherapp.data.meteoAPIDataSource.dto.toWeatherResponse
+import com.izainab.myweatherapp.domain.entities.Location
+import com.izainab.myweatherapp.domain.entities.WeatherResponse
+import com.izainab.myweatherapp.domain.repositories.WeatherRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+
+class WeatherRepositoryImp : WeatherRepository {
+
+    override suspend fun getWeatherByLocation(location: Location): WeatherResponse {
+        return try {
+
+            val client = HttpClient(CIO) {
+                install(ContentNegotiation) {
+                    json(Json {
+                        ignoreUnknownKeys = true
+                    })
+                }
+            }
+
+            val url =
+                "https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,relative_humidity_2m,uv_index,is_day,rain,weather_code,surface_pressure,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&hourly=temperature_2m,weather_code&timezone=auto&forecast_days=8"
+
+             client.get(url).body<WeatherResponseDto>().toWeatherResponse(location.city)
+                .also { Log.i("Response : ", it.toString()) }
+
+        } catch (e: Exception) {
+            Log.i("Error : ", e.message.toString())
+            throw  e
+        }
+    }
+}
