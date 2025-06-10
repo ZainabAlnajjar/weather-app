@@ -1,5 +1,8 @@
 package com.izainab.myweatherapp.presentation.composable
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +21,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.izainab.myweatherapp.R
+import com.izainab.myweatherapp.domain.entities.WeatherResponse
 import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayWeatherSection(modifier: Modifier = Modifier) {
+fun TodayWeatherSection(weatherResponse: WeatherResponse, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -42,8 +52,13 @@ fun TodayWeatherSection(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
 //            contentPadding = PaddingValues(bottom = 12.dp),
         ) {
-            items  (listOf("", "", "","","","","")) { step ->
-                HourlyWeatherChip("25°C", "11:00", painterResource(R.drawable.clear_sky))
+
+            items (weatherResponse.todayHourlyWeatherInfo) { hourlyItem ->
+                HourlyWeatherChip(
+                   hourlyItem.temperature2m.toString() + weatherResponse.weatherUnits.temperature2m,
+                    hourlyItem.time,
+                    painterResource(R.drawable.clear_sky)
+                )
             }
         }
     }
@@ -52,5 +67,5 @@ fun TodayWeatherSection(modifier: Modifier = Modifier) {
 @Preview(widthDp = 360)
 @Composable
 fun TodayWeatherSectionPre() {
-    TodayWeatherSection()
+//    TodayWeatherSection()
 }

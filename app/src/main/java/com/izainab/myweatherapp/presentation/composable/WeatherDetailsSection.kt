@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun WeatherDetailsSection(modifier: Modifier = Modifier) {
+fun WeatherDetailsSection(detailsList: List<DetailsItem>, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -39,5 +39,5 @@ fun WeatherDetailsSection(modifier: Modifier = Modifier) {
 @Preview(widthDp = 360, showBackground = true)
 @Composable
 fun WeatherDetailsSectionPreview() {
-    WeatherDetailsSection()
+    WeatherDetailsSection(detailsList)
 }

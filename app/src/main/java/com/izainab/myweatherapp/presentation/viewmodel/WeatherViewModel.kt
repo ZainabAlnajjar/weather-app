@@ -20,17 +20,21 @@ class WeatherViewModel(
     private val getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase
 ) : ViewModel() {
 
+//    init {
+//        getWeather()
+//    }
+
     private val _state = MutableStateFlow(WeatherUiState())
     val state = _state.asStateFlow()
 
-    fun getWeather(): WeatherUiState {
+    fun getWeather() {
+        _state.update { _state.value.copy(isLoading = true) }
+
         viewModelScope.launch {
-//            _state.update { _state.value.copy(isLoading = true) }
             val response = getCurrentLocationWeatherUseCase.getCurrentLocationWeather()
 
             _state.update { _state.value.copy(weatherResponse = response, isLoading = false) }
             Log.i("Response : ", state.value.toString())
         }
-        return state.value
     }
 }
