@@ -1,7 +1,6 @@
 package com.izainab.myweatherapp.domain.entities
 
-data class WeatherResponse(
-    val city: String,
+data class WeatherInfo(
     val rain: Int,
     val relativeHumidity2m: Int,
     val uvIndex: Int,
@@ -10,7 +9,7 @@ data class WeatherResponse(
     val windSpeed10m: Int,
     val weatherCode: Int,
     val time: String,
-    val isDay: Int,
+    val isDay: Boolean,
     val todayHourlyWeatherInfo: List<HourlyWeatherInfo>,
     val weeklyWeatherInfo: List<DailyWeatherInfo>,
     val weatherUnits: WeatherUnits,

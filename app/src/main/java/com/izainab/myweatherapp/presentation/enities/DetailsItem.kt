@@ -1,4 +1,4 @@
-package com.izainab.myweatherapp.presentation.composable
+package com.izainab.myweatherapp.presentation.enities
 
 class DetailsItem(
     val title: String,

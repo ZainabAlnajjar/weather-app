@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.izainab.myweatherapp.presentation.enities.DetailsItem
 
 @Composable
-fun WeatherDetailsSection(detailsList: List<DetailsItem>, modifier: Modifier = Modifier) {
+fun WeatherDetailsSection(detailsList: List<DetailsItem>, isDay: Boolean, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -30,7 +31,7 @@ fun WeatherDetailsSection(detailsList: List<DetailsItem>, modifier: Modifier = M
             userScrollEnabled = false,
         ) {
             items(detailsList) { item ->
-                WeatherDetailsChip(item.title, item.value, painterResource(item.imageId))
+                WeatherDetailsChip(item.title, item.value, painterResource(item.imageId), isDay)
             }
         }
     }
@@ -39,5 +40,5 @@ fun WeatherDetailsSection(detailsList: List<DetailsItem>, modifier: Modifier = M
 @Preview(widthDp = 360, showBackground = true)
 @Composable
 fun WeatherDetailsSectionPreview() {
-    WeatherDetailsSection(detailsList)
+    WeatherDetailsSection(detailsList, true)
 }

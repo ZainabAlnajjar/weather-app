@@ -1,43 +1,39 @@
 package com.izainab.myweatherapp.presentation.screens
 
-import androidx.compose.foundation.Image
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.izainab.myweatherapp.R
-import com.izainab.myweatherapp.presentation.composable.LocationContainer
-import com.izainab.myweatherapp.presentation.composable.TemperatureSection
+import com.izainab.myweatherapp.presentation.composable.SpacerVertical24
 import com.izainab.myweatherapp.presentation.composable.TodayWeatherSection
 import com.izainab.myweatherapp.presentation.composable.WeatherDetailsSection
+import com.izainab.myweatherapp.presentation.composable.WeatherSummary
 import com.izainab.myweatherapp.presentation.composable.WeeklyWeatherSection
 import com.izainab.myweatherapp.presentation.composable.getWeatherDetailsList
-import com.izainab.myweatherapp.presentation.ui.theme.BackgroundLinearGradient
-import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
+import com.izainab.myweatherapp.presentation.ui.theme.DayBackgroundLinearGradient
+import com.izainab.myweatherapp.presentation.ui.theme.LocationTextColor
+import com.izainab.myweatherapp.presentation.ui.theme.NightBackgroundLinearGradient
 import com.izainab.myweatherapp.presentation.viewmodel.WeatherViewModel
 import org.koin.androidx.compose.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
+    innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
     weatherViewModel: WeatherViewModel = koinViewModel<WeatherViewModel>(),
 ) {
@@ -46,92 +42,88 @@ fun MainScreen(
 
     val state by weatherViewModel.state.collectAsState()
 
-
-//    if (state.weatherResponse == null) {
-
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundLinearGradient),
+            .fillMaxSize(),
+//            .background(DayBackgroundLinearGradient),
         contentAlignment = Alignment.Center
     ) {
-        if (state.isLoading) {
+        if (state.currentWeather == null) {
             CircularProgressIndicator(
-                color = Color(0xFF323232),
-            )
-        } else if (state.weatherResponse == null) {
-            Text(
-                text = "Failed to fetch Data",
-                color = Color(0xFF323232),
-                fontFamily = urbanist_FontFamily,
-                fontWeight = FontWeight(500),
-                fontSize = 16.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.25.sp
+                color = LocationTextColor
             )
         } else {
+
+            val isDay = state.currentWeather!!.isDay
+
+            var columnScrollState = rememberScrollState()
 
             Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(BackgroundLinearGradient)
-                    .padding(top = 24.dp)
-                    .padding(horizontal = 12.dp),
+                    .background(
+                        brush = if (isDay) DayBackgroundLinearGradient else NightBackgroundLinearGradient
+                    )
+                    .padding(innerPadding)
+                    .verticalScroll(columnScrollState)
+//                    .padding(horizontal = 12.dp)
+                    .padding(top = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                LocationContainer(state.weatherResponse!!.city)
-
-                Spacer(modifier = Modifier.height(12.dp))
-
+                WeatherSummary(
+                    state.location,
+                    isDay = isDay,
+                    scrollState = columnScrollState,
+                    currentWeatherUIState = state.currentWeather!!,
+                    weatherUnitsUIState = state.weatherUnitsUIState!!,
+                )
+//
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
                         .padding(bottom = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Image(
-                        painter = painterResource(R.drawable.clear_sky),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.height(200.dp)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    TemperatureSection(
-                        state.weatherResponse!!.weeklyWeatherInfo[0].temperature2mMax.toString() + state.weatherResponse!!.weatherUnits.temperature2m,
-                        state.weatherResponse!!.weeklyWeatherInfo[0].temperature2mMin.toString() + state.weatherResponse!!.weatherUnits.temperature2m,
-                        state.weatherResponse!!.temperature2m.toString() + state.weatherResponse!!.weatherUnits.temperature2m,
-                        "Sunny"
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
+                    SpacerVertical24()
                     val detailsList = getWeatherDetailsList(
-                        windValueWithUnit = state.weatherResponse!!.windSpeed10m.toString() + " " + state.weatherResponse!!.weatherUnits.windSpeed10m,
-                        humidityValueWithUnit = state.weatherResponse!!.relativeHumidity2m.toString() + state.weatherResponse!!.weatherUnits.relativeHumidity2m,
-                        rainValueWithUnit = state.weatherResponse!!.rain.toString() + state.weatherResponse!!.weatherUnits.rain,
-                        uvIndexValueWithUnit = state.weatherResponse!!.uvIndex.toString() + state.weatherResponse!!.weatherUnits.uvIndex,
-                        pressureValueWithUnit = state.weatherResponse!!.surfacePressure.toString() + " " + state.weatherResponse!!.weatherUnits.surfacePressure,
-                        temperatureValueWithUnit = state.weatherResponse!!.temperature2m.toString() + state.weatherResponse!!.weatherUnits.temperature2m,
+                        windValueWithUnit = state.currentWeather!!.windSpeed10m.toString() + " " + state.weatherUnitsUIState!!.windSpeed10m.slice(
+                            0..1
+                        ).uppercase() + state.weatherUnitsUIState!!.windSpeed10m.slice(2..3),
+                        humidityValueWithUnit = state.currentWeather!!.relativeHumidity2m.toString() + state.weatherUnitsUIState!!.relativeHumidity2m,
+                        rainValueWithUnit = state.currentWeather!!.rain.toString() + state.weatherUnitsUIState!!.rain,
+                        uvIndexValueWithUnit = state.currentWeather!!.uvIndex.toString() + state.weatherUnitsUIState!!.uvIndex,
+                        pressureValueWithUnit = state.currentWeather!!.surfacePressure.toString() + " " + state.weatherUnitsUIState!!.surfacePressure,
+                        temperatureValueWithUnit = state.currentWeather!!.temperature2m.toString() + state.weatherUnitsUIState!!.temperature2m,
                     )
-                    WeatherDetailsSection(detailsList)
+                    WeatherDetailsSection(
+                        detailsList,
+                        isDay,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    SpacerVertical24()
 
-                    TodayWeatherSection(state.weatherResponse!!)
+                    TodayWeatherSection(
+                        state.hourlyWeatherUIState,
+                        state.weatherUnitsUIState!!, state.currentWeather!!.isDay
+                    )
 
-                    Spacer(modifier = Modifier.height(24.dp))
-                    WeeklyWeatherSection(state.weatherResponse!!.weeklyWeatherInfo)
+                    SpacerVertical24()
+                    WeeklyWeatherSection(
+                        state.dailyWeatherUIState,
+                        isDay,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(widthDp = 360, heightDp = 1522)
 @Composable
 fun MainScreenPre() {
-    MainScreen()
+    MainScreen(PaddingValues())
 }

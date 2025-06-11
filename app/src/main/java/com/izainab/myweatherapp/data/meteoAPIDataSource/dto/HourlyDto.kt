@@ -12,4 +12,6 @@ data class HourlyDto(
     val temperature2m: List<Double>,
     @SerialName("weather_code")
     val weatherCode: List<Int>,
+    @SerialName("is_day")
+    val isDay: List<Int>,
 )

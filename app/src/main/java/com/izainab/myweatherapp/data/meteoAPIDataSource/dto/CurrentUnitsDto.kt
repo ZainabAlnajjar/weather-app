@@ -17,6 +17,7 @@ data class CurrentUnitsDto (
     val uvIndex: String,
     @SerialName("is_day")
     val isDay: String,
+    @SerialName("precipitation_probability")
     val rain: String,
     @SerialName("weather_code")
     val weatherCode: String,

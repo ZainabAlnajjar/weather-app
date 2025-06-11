@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.izainab.myweatherapp.R
+import com.izainab.myweatherapp.presentation.ui.theme.DividerColor
+import com.izainab.myweatherapp.presentation.ui.theme.NightDividerColor
+import com.izainab.myweatherapp.presentation.ui.theme.NightOpaqueTextColor
+import com.izainab.myweatherapp.presentation.ui.theme.NightSecondaryTextColor
+import com.izainab.myweatherapp.presentation.ui.theme.OpaqueTextColor
+import com.izainab.myweatherapp.presentation.ui.theme.SecondaryTextColor
 import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
 
 @Composable
@@ -33,13 +38,12 @@ fun DailyWeatherContainer(
     highTemperature: String,
     lowTemperature: String,
     painter: Painter,
+    isDay: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-//            .background(Color(0xB2FFFFFF))
-//            .border(width = 0.5.dp, color = Color(0x14060414))
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -48,7 +52,7 @@ fun DailyWeatherContainer(
         Text(
             text = day,
 //            color = MaterialTheme.colorScheme.onPrimary,
-            color = Color(0x99060414),
+            color = if (isDay) SecondaryTextColor else NightSecondaryTextColor,
             fontFamily = urbanist_FontFamily,
             fontWeight = FontWeight(400),
             fontSize = 16.sp,
@@ -78,7 +82,7 @@ fun DailyWeatherContainer(
             Icon(
                 painter = painterResource(R.drawable.icon_arrow_down),
                 contentDescription = null,
-                tint = Color(0xDE060414),
+                tint = if (isDay) OpaqueTextColor else NightOpaqueTextColor,
                 modifier = Modifier
                     .size(12.dp)
                     .rotate(180f)
@@ -86,7 +90,7 @@ fun DailyWeatherContainer(
             Text(
                 text = "$highTemperature°C",
 //            color = MaterialTheme.colorScheme.onSecondary,
-                color = Color(0xDE060414),
+                color = if (isDay) OpaqueTextColor else NightOpaqueTextColor,
                 fontFamily = urbanist_FontFamily,
                 fontWeight = FontWeight(500),
                 fontSize = 14.sp,
@@ -95,18 +99,21 @@ fun DailyWeatherContainer(
             Spacer(
                 modifier = Modifier
                     .size(1.dp, 14.dp)
-                    .border(width = 1.dp, Color(0x3D060414))
+                    .border(width = 1.dp,
+                        if(isDay) DividerColor else NightDividerColor
+                    )
             )
             Icon(
                 painter = painterResource(R.drawable.icon_arrow_down),
                 contentDescription = null,
-                tint = Color(0xDE060414),
+                tint = if (isDay) OpaqueTextColor else NightOpaqueTextColor,
+
                 modifier = Modifier.size(12.dp)
             )
             Text(
                 text = "$lowTemperature°C",
 //            color = MaterialTheme.colorScheme.onSecondary,
-                color = Color(0xDE060414),
+                color = if (isDay) OpaqueTextColor else NightOpaqueTextColor,
                 fontFamily = urbanist_FontFamily,
                 fontWeight = FontWeight(500),
                 fontSize = 14.sp,
@@ -125,6 +132,7 @@ fun DailyWeatherContainerPre() {
         "Sunday",
         "32",
         "20",
-        painterResource(R.drawable.clear_sky)
+        painterResource(R.drawable.clear_sky),
+        true
     )
 }

@@ -1,5 +1,7 @@
 package com.izainab.myweatherapp.presentation.composable
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -17,19 +19,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.izainab.myweatherapp.R
-import com.izainab.myweatherapp.domain.entities.DailyWeatherInfo
-import com.izainab.myweatherapp.domain.entities.WeatherResponse
+import com.izainab.myweatherapp.presentation.states.DailyWeatherUIState
+import com.izainab.myweatherapp.presentation.ui.theme.BorderColor
+import com.izainab.myweatherapp.presentation.ui.theme.CardSurface
+import com.izainab.myweatherapp.presentation.ui.theme.NightBorderColor
+import com.izainab.myweatherapp.presentation.ui.theme.NightCardSurface
+import com.izainab.myweatherapp.presentation.ui.theme.NightPrimaryTextColor
+import com.izainab.myweatherapp.presentation.ui.theme.PrimaryTextColor
 import com.izainab.myweatherapp.presentation.ui.theme.urbanist_FontFamily
+import com.izainab.myweatherapp.presentation.util.WeatherResources
+import com.izainab.myweatherapp.presentation.util.convertToDayOfTheWeek
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeeklyWeatherSection(weeklyWeatherInfo: List<DailyWeatherInfo>, modifier: Modifier = Modifier) {
+fun WeeklyWeatherSection(
+    weeklyWeatherUIState: List<DailyWeatherUIState>,
+    isDay: Boolean,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -37,33 +49,41 @@ fun WeeklyWeatherSection(weeklyWeatherInfo: List<DailyWeatherInfo>, modifier: Mo
     ) {
         Text(
             text = "Next 7 days",
-            color = Color(0xFF060414),
+            color = if (isDay) PrimaryTextColor else NightPrimaryTextColor,
             fontFamily = urbanist_FontFamily,
             fontWeight = FontWeight(600),
             fontSize = 20.sp,
             letterSpacing = 0.25.sp
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        SpacerVertical12()
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 100.dp, max = 1000.dp)
-                .background(Color(0xB2FFFFFF), shape = RoundedCornerShape(24.dp))
-                .border(width = 1.dp, Color(0x14060414), shape = RoundedCornerShape(24.dp))
+                .background(
+                    color = if (isDay) CardSurface else NightCardSurface,
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = if (isDay) BorderColor else NightBorderColor,
+                    shape = RoundedCornerShape(24.dp)
+                )
                 .padding(vertical = 4.dp),
         ) {
-            itemsIndexed(weeklyWeatherInfo) { index, day ->
+            itemsIndexed(weeklyWeatherUIState) { index, day ->
                 Box(contentAlignment = Alignment.BottomCenter) {
 
                     DailyWeatherContainer(
-                        day.time.toString(),
+                        convertToDayOfTheWeek(day.time),
                         day.temperature2mMax.toString(),
                         day.temperature2mMin.toString(),
-                        painterResource(R.drawable.clear_sky)
+                        painterResource(WeatherResources.getImageResId(true, day.weatherCode)),
+                        isDay
                     )
-                    if (index != weeklyWeatherInfo.lastIndex) {
+                    if (index != weeklyWeatherUIState.lastIndex) {
                         HorizontalDivider(
-                            color = Color(0x14060414)
+                            color = if (isDay) BorderColor else NightBorderColor,
                         )
                     }
                 }
